@@ -1,4 +1,4 @@
-export const ENV_VARS = {
+export const ENV = {
     PORT: 'PORT',
     MONGODB_USER: 'MONGODB_USER',
     MONGODB_PASSWORD: 'MONGODB_PASSWORD',
