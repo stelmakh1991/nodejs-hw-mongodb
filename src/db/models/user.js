@@ -1,10 +1,12 @@
 import { Schema, model } from 'mongoose';
+import { ROLES } from '../../constants/index.js';
 
 const userSchema = new Schema(
   {
     name: { type: String, required: true },
     password: { type: String, required: true },
     email: { type: String, required: true, unique: true },
+    role: {type: String, default: ROLES.AUTOR},
   },
   { timestamps: true, versionKey: false },
 );

@@ -7,11 +7,11 @@ import {
   patchContactController,
 } from '../controllers/contacts.js';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-
+import { checkRoles } from '../middlewares/checkRoles.js';
 import { createContactSchema } from '../validation/createContactsSchema.js';
 import { validateBody } from '../middlewares/validateBody.js';
 import { updateContactSchema } from '../validation/updateContactsSchema.js';
-
+import { ROLES } from '../constants/index.js';
 import { authentificate } from '../middlewares/authentificate.js';
 
 const router = Router();
@@ -22,7 +22,7 @@ router.use(authentificate);
 
 router.get('/', ctrlWrapper(getContactsController));
 
-router.get('/:contactId', ctrlWrapper(getContactsControllerById));
+router.get('/:contactId', checkRoles(ROLES.AUTOR), ctrlWrapper(getContactsControllerById));
 
 router.post(
   '/',
@@ -32,10 +32,11 @@ router.post(
 
 router.patch(
   '/:contactId',
+  checkRoles(ROLES.AUTOR),
   validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
 );
 
-router.delete('/:contactId', ctrlWrapper(deleteContactByIdController));
+router.delete('/:contactId', checkRoles(ROLES.AUTOR), ctrlWrapper(deleteContactByIdController));
 
 export default router;
