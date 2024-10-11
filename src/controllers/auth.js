@@ -75,8 +75,6 @@ import {
     });
   };
 
-
-
   export const resetPasswordController = async (req, res) => {
     await resetPassword(req.body);
 
