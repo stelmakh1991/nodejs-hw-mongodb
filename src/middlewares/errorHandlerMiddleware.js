@@ -1,7 +1,7 @@
 import { HttpError } from 'http-errors';
 import { MongooseError } from 'mongoose';
 
-export const errorHandlerMiddleware = (error, req, res, next) => {
+export const errorHandlerMiddleware = (error, _req, res, _next) => {
   if (error instanceof HttpError) {
     return res.status(error.status).json({
       status: error.status,

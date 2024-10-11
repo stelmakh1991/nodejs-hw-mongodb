@@ -9,6 +9,8 @@ import {
   SORT_ORDER,
 } from '../constants/index.js';
 
+import { saveFile } from '../utils/saveFile.js';
+
 const createPaginationInformation = (page, perPage, count) => {
   const totalPages = Math.ceil(count / perPage);
   const hasNextPage = page < totalPages;
@@ -83,8 +85,10 @@ export const getContactById = async (contactId, userId) => {
   return contact;
 };
 
-export const createContact = async (payload, userId) => {
-  const contact = await Contact.create({ ...payload, userId });
+export const createContact = async ({ photo, ...payload }, userId) => {
+  const url = await saveFile(photo);
+
+  const contact = await Contact.create({ ...payload, userId, photo: url });
 
   return contact;
 };
@@ -92,16 +96,18 @@ export const createContact = async (payload, userId) => {
 export const upsertContact = async (
   contactId,
   userId,
-  payload,
+  { photo, ...payload },
   options = {},
 ) => {
+  const url = await saveFile(photo);
+
   if (!mongoose.Types.ObjectId.isValid(contactId)) {
     throw createHttpError(404, 'Contact not found');
   }
 
   const rawResult = await Contact.findOneAndUpdate(
     { _id: contactId, userId },
-    payload,
+    { ...payload, photo: url },
     {
       new: true,
       includeResultMetadata: true,
