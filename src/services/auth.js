@@ -3,13 +3,7 @@ import { User } from '../db/models/user.js';
 import { Session } from '../db/models/session.js';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
-import jwt from 'jsonwebtoken';
-import { ENV, TEMPLATES_DIR } from '../constants/index.js';
-import { sendMail } from '../utils/sendMail.js';
-import handlebars from 'handlebars';
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { env } from '../utils/env.js';
+
 
 const createSession = () => {
   return {
@@ -28,7 +22,7 @@ export const createUser = async (payload) => {
   if (user) {
     throw createHttpError(
       409,
-      'The user with this email already exists in the database!',
+      'User with this email is already present in database!',
     );
   }
 
@@ -92,66 +86,4 @@ export const refreshSession = async ({ sessionId, sessionToken }) => {
     userId: user._id,
     ...createSession(),
   });
-};
-
-export const sendResetPassword = async (email) => {
-  const user = await User.findOne({ email });
-  if (!user) {
-    throw createHttpError(404, 'User not found');
-  }
-
-  console.log(User);
-
-  const token = jwt.sign(
-    {
-      sub: user._id,
-      email,
-    },
-    env(ENV.JWT_SECRET),
-    {
-      expiresIn: '5m',
-    },
-  );
-
-  const templateSource = await fs.readFile(
-    path.join(TEMPLATES_DIR, 'send-reset-password-email.html'),
-  );
-
-  const template = handlebars.compile(templateSource.toString());
-
-  const html = template({
-    name: user.name,
-    link: `${ENV.APP_DOMAIN}/reset-password?token=${token}`,
-  });
-
-  try {
-    await sendMail({
-      html,
-      to: email,
-      from: env(ENV.SMTP_FROM),
-      subject: 'Reset your password!',
-    });
-  } catch (err) {
-    console.log(err);
-    throw createHttpError(500, 'Problem with sending emails');
-  }
-};
-
-export const resetPassword = async ({ token, password }) => {
-  let tokenPayload;
-  try {
-    tokenPayload = jwt.verify(token, env(ENV.JWT_SECRET));
-  } catch (err) {
-    throw createHttpError(401, err.message);
-  }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-
-  await User.findOneAndUpdate(
-    {
-      _id: tokenPayload.sub,
-      email: tokenPayload.email,
-    },
-    { password: hashedPassword },
-  );
 };

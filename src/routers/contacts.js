@@ -13,7 +13,6 @@ import { validateBody } from '../middlewares/validateBody.js';
 import { updateContactSchema } from '../validation/updateContactsSchema.js';
 import { ROLES } from '../constants/index.js';
 import { authentificate } from '../middlewares/authentificate.js';
-import { upload } from '../middlewares/upload.js';
 
 const router = Router();
 
@@ -23,13 +22,10 @@ router.use(authentificate);
 
 router.get('/', ctrlWrapper(getContactsController));
 
-router.get('/:contactId',
-  checkRoles(ROLES.AUTOR),
-  ctrlWrapper(getContactsControllerById));
+router.get('/:contactId', checkRoles(ROLES.AUTOR), ctrlWrapper(getContactsControllerById));
 
 router.post(
   '/',
-  upload.single('photo'),
   validateBody(createContactSchema),
   ctrlWrapper(createContactController),
 );
@@ -37,14 +33,10 @@ router.post(
 router.patch(
   '/:contactId',
   checkRoles(ROLES.AUTOR),
-  upload.single('photo'),
   validateBody(updateContactSchema),
   ctrlWrapper(patchContactController),
 );
 
-router.delete(
-  '/:contactId',
-  checkRoles(ROLES.AUTOR),
-  ctrlWrapper(deleteContactByIdController));
+router.delete('/:contactId', checkRoles(ROLES.AUTOR), ctrlWrapper(deleteContactByIdController));
 
 export default router;

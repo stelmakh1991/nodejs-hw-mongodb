@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 
 import { env } from './utils/env.js';
-import { ENV, UPLOAD_DIR } from './constants/index.js';
+import { ENV } from './constants/index.js';
 import { errorHandlerMiddleware } from './middlewares/errorHandlerMiddleware.js';
 import { notFoundMiddleware } from './middlewares/notFoundMiddleware.js';
 import rootRouter from './routers/index.js';
@@ -20,7 +20,6 @@ export const setupServer = () => {
       type: ['application/json', 'application/vnd.api+json'],
     }),
   );
-  app.use('/uploads', express.static(UPLOAD_DIR));
 
   app.use(rootRouter);
 
