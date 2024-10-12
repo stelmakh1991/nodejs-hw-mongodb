@@ -12,10 +12,9 @@ tags:
     description: Operations about contacts.
   - name: Auth
     description: Auth operations.
-  # теги, що ви будете використовувати
 servers:
   - url: http://localhost:3000
-  - url: #посилання на задеплоєний сайт
+  - url: https://nodejs-hw-mongodb-7-3twq.onrender.com
 paths:
   /contacts/{id}:
     get:
@@ -47,7 +46,6 @@ paths:
   /auth/reset-password:
     post:
       $ref: ../swagger/paths/auth/resetPassword/post.yaml
-  # тут будуть посилання на ендпоінти
 components:
   securitySchemes:
     bearerAuth:
