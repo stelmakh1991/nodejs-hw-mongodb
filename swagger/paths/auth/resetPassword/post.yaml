@@ -1,0 +1,77 @@
+tags:
+  - Auth
+summary: Create new password
+operationId: resetPassword
+description: 'Create new password'
+security:
+  - bearerAuth: []
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - password
+          - token
+        properties:
+          password:
+            type: string
+            example: password123
+          token:
+            type: string
+            example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NjcwMzhjNDM5Zjg0YmUzZDQ4YjBiNTYiLCJlbWFpbCI6ImlwYXJhbjgwMDAwQGdtYWlsLmNvbSIsImlhdCI6MTcxODYzMDY3MiwiZXhwIjoxNzE4NjMwNzMyfQ.wE7pC_zfNvTMPLbEvZ_A2Ixbg5U80p3QTTGhoCTfKKE
+responses:
+  '200':
+    description: Password was successfully reset
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Password was successfully reset!
+            data:
+              type: object
+  '401':
+    description: Token is expired or invalid
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 401
+            message:
+              type: string
+              example: UnauthorizedError
+            data:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Token is expired or invalid
+  '404':
+    description: User not found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+              example: NotFoundError
+            data:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: User not found

@@ -8,6 +8,8 @@ import { notFoundMiddleware } from './middlewares/notFoundMiddleware.js';
 import rootRouter from './routers/index.js';
 import cookiesParser from 'cookie-parser';
 
+import { swaggerDocs } from './middlewares/swaggerDocs.js';
+
 export const setupServer = () => {
   const app = express();
 
@@ -20,6 +22,9 @@ export const setupServer = () => {
       type: ['application/json', 'application/vnd.api+json'],
     }),
   );
+
+  app.use('/api-docs', ...swaggerDocs());
+
   app.use('/uploads', express.static(UPLOAD_DIR));
 
   app.use(rootRouter);
